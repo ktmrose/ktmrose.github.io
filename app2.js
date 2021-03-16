@@ -15,7 +15,25 @@ const scopes = [
 
 const AUTHORIZE = "https://accounts.spotify.com/authorize";
 
+function getcode() {
+    let code = null;
+    const queryString = window.location.search;
+    if (queryString.length > 0) {
+        const urlParams = new URLSearchParams(queryString);
+        code = urlParams.get('code');
+    }
+    console.log(code);
+    return code;
+}
+
+function handleRedirect() {
+    let code = getcode();
+}
+
 function onPageLoad() {
+    if (window.location.search.length > 0) {
+        handleRedirect();
+    }
 }
 
 function requestAuthorization() {
