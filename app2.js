@@ -1,4 +1,4 @@
-var redirectUri = 'https://ktmrose.github.io/callback';
+var redirectUri = 'https://ktmrose.github.io';
 var clientId = "";
 var clientSec = "";
 
