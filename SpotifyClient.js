@@ -13,6 +13,9 @@ const scopes = [
     'user-top-read',
     'user-read-playback-position',
     'user-read-recently-played',
+    'streaming',
+    'user-read-email',
+    'user-read-private'
 ];
 
 const AUTHORIZE = "https://accounts.spotify.com/authorize";
@@ -99,7 +102,10 @@ function onPageLoad() {
         if (access_token == null) {
             document.getElementById("tokenSection").style.display = 'block';
         } else {
-
+            document.getElementById("songSelection").style.display = 'block';
+            // refreshDevices();
+            // refreshPlaylists();
+            // currentlyPlaying();
         }
     }
 }
