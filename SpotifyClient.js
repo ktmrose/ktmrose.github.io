@@ -111,11 +111,11 @@ function addSongToQ(){
     let songId;
     songId = document.getElementById("track").value;
     if (songId !== undefined) {
-        addSongToQ(songId);
+        pushSongToQ(songId);
     }
 }
 
-function addSongToQ(trackID) {
+function pushSongToQ(trackID) {
 
     callSpotifyApi("POST", QUEUE, "?uri=" + encodeURI("spotify:track:" + trackID), handleSongAddition);
 }
