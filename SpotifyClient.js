@@ -112,9 +112,7 @@ function addSongToQ(){
 
 function addSongToQ(trackID) {
 
-    let body = {};
-    body.context_uri = "spotify:track:" + trackID;
-    callSpotifyApi("POST", QUEUE, JSON.stringify(body), handleSongAddition);
+    callSpotifyApi("POST", QUEUE, "?uri=spotify:track:" + trackID, handleSongAddition);
 }
 
 function playQ() {
