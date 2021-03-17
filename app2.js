@@ -91,7 +91,7 @@ function requestAuthorization() {
     clientId = document.getElementById("clientId").value;
     clientSec = document.getElementById("clientSecret").value;
     localStorage.setItem("client_id", clientId);
-    localStorage.setItem("client_sec", clientSec);
+    localStorage.setItem("client_secret", clientSec);
 
     let url = AUTHORIZE;
     url += "?client_id=" + clientId;
