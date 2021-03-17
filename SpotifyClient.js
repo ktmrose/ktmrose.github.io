@@ -117,11 +117,20 @@ function addSongToQ(){
 
 function pushSongToQ(trackID) {
 
-    callSpotifyApi("POST", QUEUE + "?uri=spotify%3Atrack%3A"+ trackID, null, handleSongAddition);
+    callSpotifyApi("POST", QUEUE + "?uri=spotify%3Atrack%3A" + trackID, null, handleSongAddition);
+}
+
+function verifySongPlays() {
+    if (this.status == 204) {
+        console.log("ReQuEsT fUlLfIlLeD");
+    } else {
+        console.log(this.responseText);
+    }
 }
 
 function playQ() {
 
+    callSpotifyApi("PUT", PLAY, null, verifySongPlays)
 }
 
 /**
