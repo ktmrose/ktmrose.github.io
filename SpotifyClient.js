@@ -76,7 +76,7 @@ function callSpotifyApi(method, url, body, callback) {
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
     xhr.send(body);
-    xhr.onload(callback);
+    xhr.onload = callback;
 }
 
 function fetchAccessToken(code) {
