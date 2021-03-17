@@ -18,21 +18,21 @@ const scopes = [
 const AUTHORIZE = "https://accounts.spotify.com/authorize";
 const TOKEN = "https://accounts.spotify.com/api/token";
 
-function getcode() {
+function getAuthCode() {
     let code = null;
     const queryString = window.location.search;
+
     if (queryString.length > 0) {
         const urlParams = new URLSearchParams(queryString);
         code = urlParams.get('code');
     }
-    // console.log(code);
     return code;
 }
 
 function handleAuthorizationResponse() {
     if (this.status === 200) {
-
         var data = JSON.parse(this.responseText);
+
         if (data.access_token !== undefined) {
             access_token = data.access_token;
             localStorage.setItem("access_token", access_token);
@@ -57,6 +57,23 @@ function callAuthorizationApi(body) {
     xhr.onload = handleAuthorizationResponse;
 }
 
+function refreshAccessToken() {
+    refresh_token = localStorage.getItem("refresh_token");
+    let body = "grant_type=refresh_token";
+    body += "&refresh_token=" + refresh_token;
+    body += "&client_id=" + clientId;
+    callAuthorizationApi(body);
+}
+
+function callSpotifyApi(method, url, body, callback) {
+    let xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Authorization', 'Bearer ' + access_token);
+    xhr.send(body);
+    xhr.onload(callback);
+}
+
 function fetchAccessToken(code) {
     let body = "grant_type=authorization_code";
     body += "&code=" + code;
@@ -67,7 +84,7 @@ function fetchAccessToken(code) {
 }
 
 function handleRedirect() {
-    let code = getcode();
+    let code = getAuthCode();
     fetchAccessToken(code);
     window.history.pushState("", "", redirectUri);
 }
