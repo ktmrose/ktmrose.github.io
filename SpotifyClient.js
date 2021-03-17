@@ -20,6 +20,8 @@ const scopes = [
 
 const AUTHORIZE = "https://accounts.spotify.com/authorize";
 const TOKEN = "https://accounts.spotify.com/api/token";
+const PLAY = "https://api.spotify.com/v1/me/player/play";
+const QUEUE = "https://api.spotify.com/v1/me/player/queue";
 
 function getAuthCode() {
     let code = null;
@@ -92,6 +94,35 @@ function handleRedirect() {
     window.history.pushState("", "", redirectUri);
 }
 
+function handleSongAddition() {
+    if (this.status == 204) {
+        console.log("Check your queue to see if your song was added.");
+    } else if (this.status == 404) {
+        console.log("Device not found");
+    } else {
+        console.log(this.responseText);
+    }
+}
+
+function addSongToQ(){
+
+    let songId = document.getElementById("track").value;
+    addSongToQ(songId);
+}
+
+function addSongToQ(trackID) {
+
+    callSpotifyApi("POST", QUEUE, encodeURI("spotify:track:" + trackID), handleSongAddition);
+}
+
+function playQ() {
+
+}
+
+/**
+ * When page loads, checks session storage for client ID and client Secret. If none, displays html
+ * that prompts the user for these. Then checks if access token is in session storage.
+ */
 function onPageLoad() {
     clientId = sessionStorage.getItem("client_id");
     clientSec = sessionStorage.getItem("client_secret");
@@ -103,7 +134,7 @@ function onPageLoad() {
             document.getElementById("tokenSection").style.display = 'block';
         } else {
             document.getElementById("songSelection").style.display = 'block';
-            // refreshDevices();
+            // addSongToQ();
             // refreshPlaylists();
             // currentlyPlaying();
         }
