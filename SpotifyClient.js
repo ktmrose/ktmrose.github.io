@@ -22,6 +22,8 @@ const AUTHORIZE = "https://accounts.spotify.com/authorize";
 const TOKEN = "https://accounts.spotify.com/api/token";
 const PLAY = "https://api.spotify.com/v1/me/player/play";
 const QUEUE = "https://api.spotify.com/v1/me/player/queue";
+const SKIP = "https://api.spotify.com/v1/me/player/next";
+const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
 
 function getAuthCode() {
     let code = null;
@@ -106,8 +108,11 @@ function handleSongAddition() {
 
 function addSongToQ(){
 
-    let songId = document.getElementById("track").value;
-    addSongToQ(songId);
+    let songId;
+    songId = document.getElementById("track").value;
+    if (songId !== undefined) {
+        addSongToQ(songId);
+    }
 }
 
 function addSongToQ(trackID) {
