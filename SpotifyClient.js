@@ -117,7 +117,7 @@ function addSongToQ(){
 
 function pushSongToQ(trackID) {
 
-    callSpotifyApi("POST", QUEUE, "?uri=spotify%3Atrack%3A"+ trackID, handleSongAddition);
+    callSpotifyApi("POST", QUEUE + "?uri=spotify%3Atrack%3A"+ trackID, null, handleSongAddition);
 }
 
 function playQ() {
