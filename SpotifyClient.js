@@ -38,11 +38,11 @@ function handleAuthorizationResponse() {
 
         if (data.access_token !== undefined) {
             access_token = data.access_token;
-            localStorage.setItem("access_token", access_token);
+            sessionStorage.setItem("access_token", access_token);
         }
         if (data.refresh_token !== undefined) {
             refresh_token = data.refresh_token;
-            localStorage.setItem("refresh_token", refresh_token);
+            sessionStorage.setItem("refresh_token", refresh_token);
         }
         onPageLoad();
     } else {
@@ -61,7 +61,7 @@ function callAuthorizationApi(body) {
 }
 
 function refreshAccessToken() {
-    refresh_token = localStorage.getItem("refresh_token");
+    refresh_token = sessionStorage.getItem("refresh_token");
     let body = "grant_type=refresh_token";
     body += "&refresh_token=" + refresh_token;
     body += "&client_id=" + clientId;
@@ -93,12 +93,12 @@ function handleRedirect() {
 }
 
 function onPageLoad() {
-    clientId = localStorage.getItem("client_id");
-    clientSec = localStorage.getItem("client_secret");
+    clientId = sessionStorage.getItem("client_id");
+    clientSec = sessionStorage.getItem("client_secret");
     if (window.location.search.length > 0) {
         handleRedirect();
     } else {
-        access_token = localStorage.getItem("access_token");
+        access_token = sessionStorage.getItem("access_token");
         if (access_token == null) {
             document.getElementById("tokenSection").style.display = 'block';
         } else {
@@ -113,8 +113,8 @@ function onPageLoad() {
 function requestAuthorization() {
     clientId = document.getElementById("clientId").value;
     clientSec = document.getElementById("clientSecret").value;
-    localStorage.setItem("client_id", clientId);
-    localStorage.setItem("client_secret", clientSec);
+    sessionStorage.setItem("client_id", clientId);
+    sessionStorage.setItem("client_secret", clientSec);
 
     let url = AUTHORIZE;
     url += "?client_id=" + clientId;
