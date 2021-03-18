@@ -25,6 +25,10 @@ const QUEUE = "https://api.spotify.com/v1/me/player/queue";
 const SKIP = "https://api.spotify.com/v1/me/player/next";
 const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
 
+/**
+ * Parses the url returned from Spotify and gets the authorization token.
+ * @returns {null} the code, if present. Code would not be present if authorization has not been granted by user.
+ */
 function getAuthCode() {
     let code = null;
     const queryString = window.location.search;
@@ -36,6 +40,9 @@ function getAuthCode() {
     return code;
 }
 
+/**
+ * Callback from requesting access and refresh tokens from Spotify.
+ */
 function handleAuthorizationResponse() {
     if (this.status === 200) {
         var data = JSON.parse(this.responseText);
@@ -55,6 +62,10 @@ function handleAuthorizationResponse() {
     }
 }
 
+/**
+ * Requests access token from Spotify's authorization endpoint.
+ * @param body includes necessary params to get access token from Spotify.
+ */
 function callAuthorizationApi(body) {
     let xhr = new XMLHttpRequest();
     xhr.open("POST", TOKEN, true);
@@ -64,6 +75,9 @@ function callAuthorizationApi(body) {
     xhr.onload = handleAuthorizationResponse;
 }
 
+/**
+ * Refreshes access token
+ */
 function refreshAccessToken() {
     refresh_token = sessionStorage.getItem("refresh_token");
     let body = "grant_type=refresh_token";
@@ -72,6 +86,13 @@ function refreshAccessToken() {
     callAuthorizationApi(body);
 }
 
+/**
+ * Generic method to handle Spotify API requests
+ * @param method "POST", "PUT", "GET"
+ * @param url Spotify end point. Don't forget to include any (required) query params here.
+ * @param body Nullable stringified JSON object
+ * @param callback after Spotify request is completed
+ */
 function callSpotifyApi(method, url, body, callback) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url, true);
@@ -81,6 +102,10 @@ function callSpotifyApi(method, url, body, callback) {
     xhr.onload = callback;
 }
 
+/**
+ * Gets access token from Spotify using authorization code.
+ * @param code Authorization code
+ */
 function fetchAccessToken(code) {
     let body = "grant_type=authorization_code";
     body += "&code=" + code;
@@ -90,12 +115,18 @@ function fetchAccessToken(code) {
     callAuthorizationApi(body);
 }
 
+/**
+ * Callback from Spotify authorization page; saves information from url sent back from Spotify and clears it
+ */
 function handleRedirect() {
     let code = getAuthCode();
     fetchAccessToken(code);
     window.history.pushState("", "", redirectUri);
 }
 
+/**
+ * Callback verifying song addition.
+ */
 function handleSongAddition() {
     if (this.status == 204) {
         console.log("Check your queue to see if your song was added.");
@@ -106,6 +137,9 @@ function handleSongAddition() {
     }
 }
 
+/**
+ * Driver method to add a song to a queue.
+ */
 function addSongToQ(){
 
     let songId;
@@ -115,12 +149,19 @@ function addSongToQ(){
     }
 }
 
+/**
+ * Adds a song with a valid Spotify track ID to the queue.
+ * @param trackID unique Spotify track ID
+ */
 function pushSongToQ(trackID) {
 
     callSpotifyApi("POST", QUEUE + "?uri=spotify%3Atrack%3A" + trackID, null, handleSongAddition);
 }
 
-function verifySongPlays() {
+/**
+ * Developer message to check if Spotify successfully received a request when otherwise not expecting a response.
+ */
+function verifyRequestHandled() {
     if (this.status == 204) {
         console.log("ReQuEsT fUlLfIlLeD");
     } else {
@@ -128,9 +169,22 @@ function verifySongPlays() {
     }
 }
 
-function playQ() {
+/**
+ * Plays if playback state is paused, otherwise pauses playback state
+ */
+function playPause() {
 
-    callSpotifyApi("PUT", PLAY, null, verifySongPlays)
+    //if playback state is playing, callAPI to pause
+    callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+    //otherwise, call API to play
+}
+
+/**
+ * Skips a song if playback state is playing
+ */
+function skipSong() {
+
+    callSpotifyApi("POST", SKIP, null, verifyRequestHandled);
 }
 
 /**
@@ -148,13 +202,13 @@ function onPageLoad() {
             document.getElementById("tokenSection").style.display = 'block';
         } else {
             document.getElementById("songSelection").style.display = 'block';
-            // addSongToQ();
-            // refreshPlaylists();
-            // currentlyPlaying();
         }
     }
 }
 
+/**
+ * Saves the client ID and client secret from the text input boxes into session storage, then redirects to Spotify authorization page.
+ */
 function requestAuthorization() {
     clientId = document.getElementById("clientId").value;
     clientSec = document.getElementById("clientSecret").value;
