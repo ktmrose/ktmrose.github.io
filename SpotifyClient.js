@@ -188,13 +188,13 @@ function handleCurrentlyPlayingResponse() {
  */
 function playPause() {
 
-    callSpotifyApi("GET", PLAYBACKSTATE, null, handleCurrentlyPlayingResponse);
-    //if playback state is playing, callAPI to pause
-    if (handleCurrentlyPlayingResponse()){
-        callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
-    } else { //otherwise, call API to play
+    // callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
+    // //if playback state is playing, callAPI to pause
+    // if (handleCurrentlyPlayingResponse()){
+    //     callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+    // } else { //otherwise, call API to play
         callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
-    }
+    // }
 }
 
 /**
