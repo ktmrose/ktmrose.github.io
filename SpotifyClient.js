@@ -24,6 +24,7 @@ const PLAY = "https://api.spotify.com/v1/me/player/play";
 const QUEUE = "https://api.spotify.com/v1/me/player/queue";
 const SKIP = "https://api.spotify.com/v1/me/player/next";
 const PLAYBACKSTATE = "https://api.spotify.com/v1/me/player";
+const PAUSE = "https://api.spotify.com/v1/me/player/pause";
 
 /**
  * Parses the url returned from Spotify and gets the authorization token.
@@ -128,9 +129,9 @@ function handleRedirect() {
  * Callback verifying song addition.
  */
 function handleSongAddition() {
-    if (this.status == 204) {
+    if (this.status === 204) {
         console.log("Check your queue to see if your song was added.");
-    } else if (this.status == 404) {
+    } else if (this.status === 404) {
         console.log("Device not found");
     } else {
         console.log(this.responseText);
@@ -162,10 +163,21 @@ function pushSongToQ(trackID) {
  * Developer message to check if Spotify successfully received a request when otherwise not expecting a response.
  */
 function verifyRequestHandled() {
-    if (this.status == 204) {
+    if (this.status === 204) {
         console.log("ReQuEsT fUlLfIlLeD");
     } else {
         console.log(this.responseText);
+    }
+}
+
+/**
+ * Parses JSON response from Spotify and verifies current player state
+ */
+function handleCurrentlyPlayingResponse() {
+    if (this.status === 200) {
+        let data = JSON.parse(this.responseText);
+        console.log(data);
+        return (data.is_playing);
     }
 }
 
@@ -174,9 +186,13 @@ function verifyRequestHandled() {
  */
 function playPause() {
 
+    callSpotifyApi("GET", PLAYBACKSTATE, null, handleCurrentlyPlayingResponse);
     //if playback state is playing, callAPI to pause
-    callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
-    //otherwise, call API to play
+    if (handleCurrentlyPlayingResponse()){
+        callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+    } else { //otherwise, call API to play
+        callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+    }
 }
 
 /**
