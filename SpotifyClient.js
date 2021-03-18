@@ -178,6 +178,8 @@ function handleCurrentlyPlayingResponse() {
         let data = JSON.parse(this.responseText);
         console.log(data);
         return (data.is_playing);
+    } else {
+        console.log(this.responseText);
     }
 }
 
