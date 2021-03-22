@@ -177,7 +177,11 @@ function handleCurrentlyPlayingResponse() {
     if (this.status === 200) {
         let data = JSON.parse(this.responseText);
         console.log(data);
-        return (data.is_playing);
+        if(data.is_playing) {
+            callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
+        } else {
+            callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
+        }
     } else {
         console.log(this.responseText);
     }
@@ -189,12 +193,6 @@ function handleCurrentlyPlayingResponse() {
 function playPause() {
 
     callSpotifyApi("GET", PLAYBACKSTATE + "?market=US", null, handleCurrentlyPlayingResponse);
-    //if playback state is playing, callAPI to pause
-    if (handleCurrentlyPlayingResponse()){
-        callSpotifyApi("PUT", PAUSE, null, verifyRequestHandled());
-    } else { //otherwise, call API to play
-        callSpotifyApi("PUT", PLAY, null, verifyRequestHandled());
-    }
 }
 
 /**
